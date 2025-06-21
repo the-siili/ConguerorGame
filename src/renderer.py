@@ -1,7 +1,9 @@
 import pygame
+import pygame_gui
 from amath import Vec2
 from settings import MAP_SIZE, WINDOW_SIZE, COORD_MULTIPLIER
 
+#global
 class Camera:
     pos = Vec2(0, 0)
     zoom = 1.0
@@ -23,14 +25,26 @@ class Camera:
             y_fix = max(y_fix_right, y_fix_left, key=lambda x:abs(x))
             self.pos.y -= y_fix
 
+    @classmethod
+    def set_position(self, pos):
+            self.pos = pos
+            self.fix_to_map()
+
+    @classmethod
+    def move(self, direction):
+            self.pos += direction
+            self.fix_to_map()
+
+
+#global
 class Renderer:
     screen = None
     ui_manager = None
     surfaces = None
 
     @classmethod
-    def initialize(self, screen, ui_manager):
-        self.ui_manager = ui_manager
+    def initialize(self, screen):
+        self.ui_manager = pygame_gui.UIManager(tuple(WINDOW_SIZE))
         self.screen = screen
         self.surfaces = {
         "capitol": pygame.transform.scale(pygame.image.load("src/res/capitol.png"), (1024//40, 1024//40)),

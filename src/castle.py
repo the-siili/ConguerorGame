@@ -5,6 +5,7 @@ from renderer import Renderer
 from object import Object
 from input import Input
 
+#instance
 class Castle(Object):
     def __init__(self, pos):
         super().__init__(pos, Vec2(1, 1))

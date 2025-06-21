@@ -7,7 +7,9 @@ from settings import REAL_MAP_SIZE, COORD_MULTIPLIER
 from input import Input
 from castle import Castle
 import game
+from engine_data import EngineData
 
+#instance
 class Nation(Object):
     def __init__(self, world, id, occupied_points, color, capitol_coords):
         self.world = world
@@ -15,26 +17,25 @@ class Nation(Object):
         self.occupied_points = occupied_points
         self.color = color
         self.capitol_coords = capitol_coords
-
+        
 
         self.render_layer = 1
 
         def find_border_coords():
 
             border_points = set()
+            water_border_points = set()
+            check_vecs = [Vec2(0, 1), Vec2(0, -1), Vec2(1, 0), Vec2(-1, 0)]
             for i in self.occupied_points:
-                if (i + Vec2(0, 1) not in self.occupied_points and i.y+1 in range(1, REAL_MAP_SIZE.y))  or\
-                    (i + Vec2(0, -1) not in self.occupied_points and i.y -1 in range(1, REAL_MAP_SIZE.y)) or\
-                    (i + Vec2(1, 0) not in self.occupied_points and i.x + 1 in range(1, REAL_MAP_SIZE.x)) or\
-                    (i + Vec2(-1, 0) not in self.occupied_points and i.x -1 in range(1, REAL_MAP_SIZE.x)):# or\
-                    #(i + Vec2(1, 1) not in self.occupied_points and i.y + 1 in range(1, REAL_MAP_SIZE.y) and i.x + 1 in range(1, REAL_MAP_SIZE.x)) or\
-                    #(i + Vec2(1, -1) not in self.occupied_points and i.y - 1 in range(1, REAL_MAP_SIZE.y) and i.x + 1 in range(1, REAL_MAP_SIZE.x)) or\
-                    #(i + Vec2(-1, -1) not in self.occupied_points and i.y - 1 in range(1, REAL_MAP_SIZE.y) and i.x - 1 in range(1, REAL_MAP_SIZE.x)) or\
-                    #(i + Vec2(-1, 1) not in self.occupied_points  and i.y + 1 in range(1, REAL_MAP_SIZE.y) and i.x - 1 in range(1, REAL_MAP_SIZE.x)):
-                    border_points.add(i)
-            return border_points
+                for vec in check_vecs:
+                    if i + vec not in self.occupied_points and i+vec in self.world.world_points.keys():
+                        if self.world.world_points[i+vec]["terrain_type"] == "water":
+                            water_border_points.add(i)
+                        border_points.add(i)
 
-        self.border_points = find_border_coords()
+            return border_points, water_border_points
+
+        self.border_points, self.water_border_points = find_border_coords()
 
 
         self.castles = set()
@@ -74,4 +75,5 @@ class Nation(Object):
             new_castle = Castle(coords)
             self.castles.add(new_castle)
             self.world.world_points[coords]["current_object"] = new_castle
-            game.Game.spawn_object(new_castle)
+            
+            EngineData.current_scene.spawn_object(new_castle)

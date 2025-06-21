@@ -1,18 +1,22 @@
 import pygame
 import pygame_gui
 from amath import Vec2
-from settings import COORD_MULTIPLIER
+from settings import COORD_MULTIPLIER, WINDOW_SIZE, REAL_MAP_SIZE
 from renderer import Renderer, Camera
 
+#global
 class Input():
+    ui_manager = None
     __mouse_states = {
         "left":(False, False, False),
         "right":(False, False, False),
         "middle":(False, False, False),
     }
-    __ui_last_pressed_button = None
+    __last_mouse_world_pos = Vec2(0, 0)
 
-
+    @classmethod
+    def initialize(self, ui_manager):
+        self.ui_manager = ui_manager
     @classmethod
     def update_inputs(self):
         for event in pygame.event.get():
@@ -20,9 +24,6 @@ class Input():
                 exit()
             if event.type == pygame.MOUSEWHEEL:
                 Camera.set_zoom(event.y*0.1)
-            if event.type == pygame_gui.UI_BUTTON_PRESSED:
-                self.__ui_last_pressed_button = event.ui_element
-
 
             Renderer.ui_manager.process_events(event)
         self.__mouse_states= {
@@ -40,7 +41,7 @@ class Input():
 
     @classmethod
     def clean_inputs(self):
-        self.__ui_last_pressed_button = None
+        self.__last_mouse_world_pos = self.mouse_world_pos()
 
     @classmethod
     def mouse_button_down(self, button):
@@ -59,11 +60,16 @@ class Input():
         x = (pygame.mouse.get_pos()[0]/COORD_MULTIPLIER/Camera.zoom)+Camera.pos.x
         y = (pygame.mouse.get_pos()[1]/COORD_MULTIPLIER/Camera.zoom)+Camera.pos.y
         return Vec2(x, y)
+
     @classmethod
     def mouse_world_pos_rounded(self):
-        x = round((pygame.mouse.get_pos()[0]/COORD_MULTIPLIER/Camera.zoom)+Camera.pos.x)
-        y = round((pygame.mouse.get_pos()[1]/COORD_MULTIPLIER/Camera.zoom)+Camera.pos.y)
+        x = pygame.math.clamp(round((pygame.mouse.get_pos()[0]/COORD_MULTIPLIER/Camera.zoom)+Camera.pos.x), 1, REAL_MAP_SIZE.x-1)
+        y = pygame.math.clamp(round((pygame.mouse.get_pos()[1]/COORD_MULTIPLIER/Camera.zoom)+Camera.pos.y), 1, REAL_MAP_SIZE.y-1)
         return Vec2(x, y)
+
+    @classmethod
+    def mouse_world_movement(self):
+        return self.__last_mouse_world_pos-self.mouse_world_pos()
     
     @classmethod
     def mouse_screen_pos(self):

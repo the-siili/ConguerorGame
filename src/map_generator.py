@@ -9,20 +9,19 @@ import random
 import pygame
 import math
 import opensimplex
-from settings import MAP_SIZE
 from amath import Vec2
 
-def generate_map():
+def generate_map(map_size):
     seed = random.randint(0, 999999)
     print(seed)
-    shape = MAP_SIZE
+    shape = map_size
     frequency = 2
     octaves = 8
     persistence = 0.5
     lacunarity = 2
 
     world = generate_fractal_noise_2d((shape.x, shape.y), 
-                                        (frequency*2, frequency), 
+                                        (frequency, frequency), 
                                         octaves=octaves,
                                         persistence=persistence,
                                         lacunarity=lacunarity,

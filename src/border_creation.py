@@ -4,11 +4,11 @@ import time
 from amath import Vec2
 import os
 
-def create_borders():
-    map_size = settings.REAL_MAP_SIZE
+def create_borders(map_size):
+    map_size = map_size
 
 
-    render_grid = [[" " for i in range(map_size.x)]for i in range(map_size.y)]
+    render_grid = [[" " for i in range(1, map_size.x)]for i in range(1, map_size.y)]
 
     nations = {}
     occupied_points = set()
@@ -64,10 +64,11 @@ def create_borders():
         
         if point_added == False:
             break
+
         # os.system('clear')
         # for y in range(len(render_grid)):
         #     for x in range(len(render_grid[1])):
-        #         owner = " "
+        #         owner = ""
         #         for i in nations.keys():
         #             if Vec2(x, y) in nations[i][0]: 
         #                 owner = i
@@ -77,7 +78,7 @@ def create_borders():
         #     for x in y:
         #         print(x, end=" ")
         #     print()
-        #time.sleep(0.01)
+        # time.sleep(0.05)
     
     for i in nations.keys():
         nations[i] = {
@@ -101,4 +102,5 @@ def create_borders():
     #     for x in y:
     #         print(x, end=" ")
     #     print()
-    
+
+#create_borders(Vec2(64, 32))
