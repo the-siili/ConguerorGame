@@ -27,9 +27,6 @@ def main():
     running = True
     Renderer.initialize(screen, ui_manager)
 
-    hello_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((350, 275), (100, 50)),
-                                             text='Say Hello',
-                                             manager=Renderer.ui_manager)
     Game.start()
     while running:
         Game.get_input()

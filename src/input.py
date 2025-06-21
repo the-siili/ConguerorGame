@@ -1,7 +1,8 @@
 import pygame
+import pygame_gui
 from amath import Vec2
 from settings import COORD_MULTIPLIER
-from renderer import Camera
+from renderer import Renderer, Camera
 
 class Input():
     __mouse_states = {
@@ -9,11 +10,21 @@ class Input():
         "right":(False, False, False),
         "middle":(False, False, False),
     }
-
+    __ui_last_pressed_button = None
 
 
     @classmethod
     def update_inputs(self):
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                exit()
+            if event.type == pygame.MOUSEWHEEL:
+                Camera.set_zoom(event.y*0.1)
+            if event.type == pygame_gui.UI_BUTTON_PRESSED:
+                self.__ui_last_pressed_button = event.ui_element
+
+
+            Renderer.ui_manager.process_events(event)
         self.__mouse_states= {
             "left":(pygame.mouse.get_pressed(3)[0], 
                     pygame.mouse.get_pressed(3)[0] and self.__mouse_states["left"][0] == False,
@@ -26,6 +37,10 @@ class Input():
                     pygame.mouse.get_pressed(3)[1] and self.__mouse_states["middle"][0] == False,
                     pygame.mouse.get_pressed(3)[1] == False and self.__mouse_states["middle"][0] == True),
         }
+
+    @classmethod
+    def clean_inputs(self):
+        self.__ui_last_pressed_button = None
 
     @classmethod
     def mouse_button_down(self, button):
@@ -41,8 +56,19 @@ class Input():
     #BROKEN!! NEEDS CAMERA POSITION SUBTRACTED TO WORK CORRECTLY
     @classmethod
     def mouse_world_pos(self):
-        return Vec2(pygame.mouse.get_pos()[0]/COORD_MULTIPLIER, pygame.mouse.get_pos()[1]/COORD_MULTIPLIER)-Camera.pos
+        x = (pygame.mouse.get_pos()[0]/COORD_MULTIPLIER/Camera.zoom)+Camera.pos.x
+        y = (pygame.mouse.get_pos()[1]/COORD_MULTIPLIER/Camera.zoom)+Camera.pos.y
+        return Vec2(x, y)
+    @classmethod
+    def mouse_world_pos_rounded(self):
+        x = round((pygame.mouse.get_pos()[0]/COORD_MULTIPLIER/Camera.zoom)+Camera.pos.x)
+        y = round((pygame.mouse.get_pos()[1]/COORD_MULTIPLIER/Camera.zoom)+Camera.pos.y)
+        return Vec2(x, y)
     
     @classmethod
     def mouse_screen_pos(self):
         return Vec2(pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1])
+
+    @classmethod
+    def was_ui_button_pressed(self, button):
+        return button == self.__ui_last_pressed_button

@@ -4,7 +4,7 @@ from input import Input
 from world import World
 from object import Object
 from renderer import Renderer, Camera
-
+from player import Player
 
 from settings import MAP_SIZE, WINDOW_SIZE, COORD_MULTIPLIER, WINDOW_FLAGS
 from amath import Vec2
@@ -28,12 +28,6 @@ class Game:
     @classmethod
     def get_input(self):
         Input.update_inputs()
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                exit()
-            if event.type == pygame.MOUSEWHEEL:
-                Camera.set_zoom(event.y*0.1)
-            Renderer.ui_manager.process_events(event)
 
         if Input.mouse_button_down("right") == False:
             self.last_L_mouse_pos = Input.mouse_screen_pos()
@@ -46,16 +40,18 @@ class Game:
 
     @classmethod
     def update(self, delta_time):
+        Player.update()
         Renderer.ui_manager.update(delta_time)
         for obj in self.objects:
             obj.update()
+        Input.clean_inputs()
     @classmethod
     def render(self):
         for layer in self.render_layers:
             for obj in layer:
                 obj.render()
         Renderer.ui_manager.draw_ui(Renderer.screen)
-        
+        Player.render()
 
     @classmethod
     def spawn_object(self, obj):

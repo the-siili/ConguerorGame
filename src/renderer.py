@@ -72,7 +72,7 @@ class Renderer:
         x2 = int((pos2.x-Camera.pos.x)*COORD_MULTIPLIER*Camera.zoom)
         y2 = int((pos2.y-Camera.pos.y)*COORD_MULTIPLIER*Camera.zoom)
 
-        pygame.draw.line(self.screen, color, (x1,y1), (x2,y2), width)
+        pygame.draw.line(self.screen, color, (x1,y1), (x2,y2), round(width*COORD_MULTIPLIER*Camera.zoom))
 
     @classmethod                                    #make sure to give width in pixels
     def render_world_circle(self, pos: Vec2, radius, color, width: int):
@@ -81,4 +81,4 @@ class Renderer:
 
         radius = int(radius*COORD_MULTIPLIER*Camera.zoom)
 
-        pygame.draw.circle(self.screen, color, (x,y), radius, width)
+        pygame.draw.circle(self.screen, color, (x,y), radius, round(width*COORD_MULTIPLIER*Camera.zoom))

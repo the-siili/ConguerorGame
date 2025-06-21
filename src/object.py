@@ -11,3 +11,7 @@ class Object():
     def render(self):
         pass
 
+    def open_info(self):
+        pass
+    def close_info(self):
+        pass
