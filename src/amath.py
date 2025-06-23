@@ -18,12 +18,18 @@ class Vec2():
         return Vec2(self.x - other.x, self.y - other.y)
     
     def __mul__(self, other):
+        if type(other) is int or type(other) is float:
+            return Vec2(self.x * other, self.y * other)
         return Vec2(self.x * other.x, self.y * other.y)
 
     def __truediv__(self, other):
+        if type(other) is int or type(other) is float:
+            return Vec2(self.x / other, self.y / other)
         return Vec2(self.x / other.x, self.y / other.y)
 
     def __floordiv__(self, other):
+        if type(other) is int or type(other) is float:
+            return Vec2(self.x // other, self.y // other)
         return Vec2(self.x // other.x, self.y // other.y)
     
     def __str__(self):
@@ -36,7 +42,7 @@ class Vec2():
             yield coordinate
     
     def __hash__(self):
-        return hash(tuple(self))
+        return hash((self.x, self.y))
 #a = Vec2(1, 4)
 #b = Vec2(2, 3)
 

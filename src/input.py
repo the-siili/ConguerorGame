@@ -23,7 +23,7 @@ class Input():
             if event.type == pygame.QUIT:
                 exit()
             if event.type == pygame.MOUSEWHEEL:
-                Camera.set_zoom(event.y*0.1)
+                Camera.set_zoom(event.y)
 
             Renderer.ui_manager.process_events(event)
         self.__mouse_states= {
@@ -57,14 +57,14 @@ class Input():
     #BROKEN!! NEEDS CAMERA POSITION SUBTRACTED TO WORK CORRECTLY
     @classmethod
     def mouse_world_pos(self):
-        x = (pygame.mouse.get_pos()[0]/COORD_MULTIPLIER/Camera.zoom)+Camera.pos.x
-        y = (pygame.mouse.get_pos()[1]/COORD_MULTIPLIER/Camera.zoom)+Camera.pos.y
+        x = (pygame.mouse.get_pos()[0]/COORD_MULTIPLIER*Camera.zoom)+Camera.pos.x
+        y = (pygame.mouse.get_pos()[1]/COORD_MULTIPLIER*Camera.zoom)+Camera.pos.y
         return Vec2(x, y)
 
     @classmethod
     def mouse_world_pos_rounded(self):
-        x = pygame.math.clamp(round((pygame.mouse.get_pos()[0]/COORD_MULTIPLIER/Camera.zoom)+Camera.pos.x), 1, REAL_MAP_SIZE.x-1)
-        y = pygame.math.clamp(round((pygame.mouse.get_pos()[1]/COORD_MULTIPLIER/Camera.zoom)+Camera.pos.y), 1, REAL_MAP_SIZE.y-1)
+        x = pygame.math.clamp(round((pygame.mouse.get_pos()[0]/COORD_MULTIPLIER*Camera.zoom)+Camera.pos.x), 1, REAL_MAP_SIZE.x-1)
+        y = pygame.math.clamp(round((pygame.mouse.get_pos()[1]/COORD_MULTIPLIER*Camera.zoom)+Camera.pos.y), 1, REAL_MAP_SIZE.y-1)
         return Vec2(x, y)
 
     @classmethod

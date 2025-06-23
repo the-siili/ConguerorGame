@@ -17,7 +17,6 @@ class Game():
         #8 render layers exist
         self.render_layers = [[],[],[],[],[],[],[],[]]
         self.delta_time = 0
-        
 
     def start(self):
         self.spawn_object(world.World())
@@ -42,4 +41,10 @@ class Game():
         if obj.render_layer < 0 or obj.render_layer >= len(self.render_layers):
             raise ValueError(f"Invalid render layer not between {0, len(self.render_layers)}: {obj}")
         self.render_layers[obj.render_layer].append(obj)
+
+    def remove_object(self, obj):
+        try:
+            self.objects.remove(obj)
+            self.render_layers[obj.render_layer].remove(obj)
+        except:print("ERROR: Trying to remove object that doesnt exist in the scene")
 

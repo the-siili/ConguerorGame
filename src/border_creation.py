@@ -4,7 +4,7 @@ import time
 from amath import Vec2
 import os
 
-def create_borders(map_size):
+def create_borders(map_size, amount_of_nations):
     map_size = map_size
 
 
@@ -12,10 +12,29 @@ def create_borders(map_size):
 
     nations = {}
     occupied_points = set()
-    colors = [(255, 255, 0, 100), (0, 255, 255, 100), (255, 0, 255, 100), (0, 0, 255, 100), (255, 0, 0, 100),(0, 255, 0, 100)]
-    for i in range(random.randint(4, 6)):
-        new_point = Vec2(random.randint(2, map_size.x-3),random.randint(2, map_size.y-3))
-        nations[i] = (set([new_point]), set(), colors[i], new_point)
+    colors = [(230, 25, 75, 255),
+                (60, 180, 75, 255),
+                (255, 225, 25, 255),
+                (0, 170, 250, 255),
+                (245, 130, 48, 255),
+                (145, 30, 180, 255),
+                (70, 240, 240, 255),
+                (240, 50, 230, 255),
+                (210, 245, 60, 255),
+                (250, 190, 190, 255)]
+    names = ["Valoria",
+            "Kingdom Of Sweidor",
+            "Karthwyn",
+            "Empire Of Emberhold ",
+            "Orrenmark",
+            "Zevaran Expanse ",
+            "Thornsworn Dynasty",
+            "Kingdom Of Drelmore",
+            "The Fyrholt Sultanate",
+            "Shadowmere"]
+    for i in range(amount_of_nations):
+        new_point = Vec2(random.randint(int(map_size.x*0.25), int(map_size.x-map_size.x*0.25)),random.randint(int(map_size.y*0.25), int(map_size.y-map_size.y*0.25)))
+        nations[i] = (set([new_point]), set(), colors[i], new_point, names[i])
 
         for p_p in [Vec2(new_point.x+1, new_point.y), 
                     Vec2(new_point.x-1, new_point.y),
@@ -78,13 +97,14 @@ def create_borders(map_size):
         #     for x in y:
         #         print(x, end=" ")
         #     print()
-        # time.sleep(0.05)
+        # time.sleep(0.01)
     
     for i in nations.keys():
         nations[i] = {
             "occupied_points":nations[i][0],
             "color":nations[i][2],
-            "capitol_coords":nations[i][3]
+            "capitol_coords":nations[i][3],
+            "name":nations[i][4]
         }
 
     return nations
@@ -103,4 +123,4 @@ def create_borders(map_size):
     #         print(x, end=" ")
     #     print()
 
-#create_borders(Vec2(64, 32))
+#create_borders(Vec2(64, 64), 12)

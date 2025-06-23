@@ -1,0 +1,71 @@
+ {
+
+     "label":
+
+     {
+
+         "colours":
+
+         {
+
+             "normal_text": "#f5f5f5",
+
+             "text_shadow": "#0a0a0a"
+
+         },
+
+         "font":
+
+         {
+
+             "name": "monospace",
+             "size":"18"
+         },
+
+         "misc":
+
+         {
+
+            "text_shadow": "1",
+
+            "text_shadow_size": "1",
+
+            "text_shadow_offset": "0,1",
+            "text_horiz_alignment":"left",
+            "text_vert_alignment":"top"
+         }
+
+     },
+
+    "panel":
+
+    {
+
+        "colours":
+
+        {
+
+            "dark_bg":"#4a4844",
+
+            "normal_border": "#ffaa00"
+
+        },
+
+        "misc":
+
+        {
+
+            "shape": "rectangle",
+
+            "shape_corner_radius": "0",
+
+            "border_width": "0",
+
+            "shadow_width": "0"
+
+        }
+
+    }
+
+
+ }

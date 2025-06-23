@@ -1,7 +1,10 @@
 # Example file showing a basic pygame "game loop"
 import pygame
 import pygame_gui
+import pygame_shaders
 import math
+import time
+import cProfile
 
 from game import Game
 from input import Input
@@ -21,7 +24,7 @@ clock = None
 delta_time = None
 running = True
 current_scene = None
-
+map_button = None
 
 def start():
     pygame.init()
@@ -37,18 +40,36 @@ def start():
     Renderer.initialize(screen)
     Input.initialize(Renderer.ui_manager)
 
-    global current_scene
-    current_scene = Game()
+    load_scene(Game())
 
-    EngineData.current_scene = current_scene
-    #print(EngineData.current_scene)
-    update_engine_data()
-    current_scene.start()
-    
-
+    #DEBUGGING
+    button_layout_rect = pygame.Rect(0, 0, 100, 50)
+    button_layout_rect.topright = (0, 0)
+    global map_button
+    map_button = pygame_gui.elements.UIButton(relative_rect=button_layout_rect,
+                                                        text="new map",
+                                                        manager=Renderer.ui_manager,
+                                                        anchors={'right': 'right',
+                                                                'top': 'top'})
+last_time = 0
 def gameloop():
-    print("hello")
     while running:
+        global map_button
+        if map_button.check_pressed():
+            #initializing renderer, because the surfaces are affected by zoom, this resets that
+            Renderer.reset()
+            load_scene(Game())
+
+            #DEBUGGING
+            button_layout_rect = pygame.Rect(0, 0, 100, 50)
+            button_layout_rect.topright = (0, 0)
+            map_button = pygame_gui.elements.UIButton(relative_rect=button_layout_rect,
+                                                    text="new map",
+                                                    manager=Renderer.ui_manager,
+                                                    anchors={'right': 'right',
+                                                            'top': 'top'})
+
+
         
         update_engine_data()
         
@@ -65,22 +86,35 @@ def gameloop():
         Renderer.ui_manager.draw_ui(Renderer.screen)
 
         pygame.display.update()
-        delta_time = clock.tick(60)  # limits FPS to 60
-
+        clock.tick()  # limits FPS to 60
+        #print(clock.get_fps())
+        global last_time
         Input.clean_inputs()
+        delta_time = time.time()-last_time
+        last_time = time.time()
+
+        print(clock.get_fps())
 
     pygame.quit()
 
 def update_engine_data():
-    #EngineData.current_scene = current_scene
-    #EngineData.delta_time = delta_time
-    pass
+    global current_scene
+    EngineData.set_current_scene(current_scene)
+
+    global delta_time
+    EngineData.delta_time = delta_time
 
 def load_scene(scene):
-    current_scene = scene
+    new_scene = scene
+    EngineData.set_current_scene(new_scene)
+    global current_scene
+    current_scene = new_scene
+    scene.start()
 
 def get_current_scene():
+    global current_scene
     return current_scene
 
 start()
-gameloop()
+
+cProfile.run("gameloop()")
