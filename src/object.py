@@ -1,5 +1,5 @@
 
-#instance
+#THE BASS CLASS FOR ALL GAME OBJECTS
 class Object():
     def __init__(self, pos, scale):
         self.pos = pos

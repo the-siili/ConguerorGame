@@ -1,6 +1,6 @@
 
 
-
+#BASIC VECTOR2 CLASS USED ALLAROUND THE APPLICATION
 class Vec2():
     def __init__(self, x, y):
         self.x = x
@@ -9,7 +9,7 @@ class Vec2():
 
 
     def __eq__(self, other):
-        return self.x == other.x and self.y == other.y
+        return other != None and self.x == other.x and self.y == other.y
 
     def __add__(self, other):
         return Vec2(self.x + other.x, self.y + other.y)
@@ -24,8 +24,8 @@ class Vec2():
 
     def __truediv__(self, other):
         if type(other) is int or type(other) is float:
-            return Vec2(self.x / other, self.y / other)
-        return Vec2(self.x / other.x, self.y / other.y)
+            return  Vec2(0, 0) if other == 0 else Vec2(self.x / other, self.y / other)
+        return Vec2( 0 if other.x == 0 else self.x / other.x, 0 if other.y == 0 else self.y / other.y)
 
     def __floordiv__(self, other):
         if type(other) is int or type(other) is float:
@@ -42,7 +42,13 @@ class Vec2():
             yield coordinate
     
     def __hash__(self):
-        return hash((self.x, self.y))
+        return hash(self.x) ^ (hash(self.y) << 1)
+    
+    def __lt__(self, other):
+        return sum(self) < sum(other)
+
+    def rounded(self):
+        return Vec2(round(self.x), round(self.y))
 #a = Vec2(1, 4)
 #b = Vec2(2, 3)
 

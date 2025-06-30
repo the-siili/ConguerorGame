@@ -1,0 +1,1 @@
+/usr/bin/c++ -fPIC -flto -Wl,--dependency-file=CMakeFiles/djikistra.dir/link.d -shared  -o djikistra.cpython-313-x86_64-linux-gnu.so CMakeFiles/djikistra.dir/main.cpp.o

@@ -1,0 +1,1 @@
+/usr/bin/c++ -fPIC  -O3 -flto -Wl,--dependency-file=CMakeFiles/dijkstra.dir/link.d -shared  -o dijkstra.cpython-313-x86_64-linux-gnu.so CMakeFiles/dijkstra.dir/main.cpp.o

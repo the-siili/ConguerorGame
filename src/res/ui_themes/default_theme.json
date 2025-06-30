@@ -65,7 +65,51 @@
 
         }
 
+    },
+    "@build_button":
+     {
+        "colours":{
+            "normal_bg": "#00000000",
+            "hovered_bg": "#00000000",
+            "pressed_bg": "#00000000"
+        }
+    },
+    "#castle_button": {
+        "colours":{
+            "normal_bg": "#00000000",
+            "hovered_bg": "#00000000",
+            "pressed_bg": "#00000000"
+        },
+        "images":{
+
+             "normal_image": {
+                 "path": "src/res/castle.png"
+
+            }
+        },
+
+
+        "text": {
+        "font_size": 0
+        }
+    },
+    "#village_button": {
+        "colours":{
+            "normal_bg": "#00000000",
+            "hovered_bg": "#00000000",
+            "pressed_bg": "#00000000"
+        },
+        "images":{
+
+             "normal_image": {
+                 "path": "src/res/village.png"
+
+            }
+        },
+
+
+        "text": {
+        "font_size": 0
+        }
     }
-
-
  }

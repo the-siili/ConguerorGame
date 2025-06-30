@@ -21,6 +21,7 @@ def create_borders(map_size, amount_of_nations):
                 (70, 240, 240, 255),
                 (240, 50, 230, 255),
                 (210, 245, 60, 255),
+                (250, 190, 190, 255),
                 (250, 190, 190, 255)]
     names = ["Valoria",
             "Kingdom Of Sweidor",
@@ -31,7 +32,9 @@ def create_borders(map_size, amount_of_nations):
             "Thornsworn Dynasty",
             "Kingdom Of Drelmore",
             "The Fyrholt Sultanate",
+            "Shadowmere",
             "Shadowmere"]
+    #GENERATES THE STARTING POINT FOR NEW NATIONS
     for i in range(amount_of_nations):
         new_point = Vec2(random.randint(int(map_size.x*0.25), int(map_size.x-map_size.x*0.25)),random.randint(int(map_size.y*0.25), int(map_size.y-map_size.y*0.25)))
         nations[i] = (set([new_point]), set(), colors[i], new_point, names[i])
@@ -50,7 +53,8 @@ def create_borders(map_size, amount_of_nations):
         occupied_points.add(new_point)
 
     #print(nations)
-
+    #ALGORITHM THAT MAKES ALL THE NATIONS EXPAND FROM STARTING POSITIONS EQUALLY
+    #GIVES NICE FAKE NATION BORDERS
     while True:
         point_added = False
         for area in nations.values():
@@ -97,8 +101,9 @@ def create_borders(map_size, amount_of_nations):
         #     for x in y:
         #         print(x, end=" ")
         #     print()
-        # time.sleep(0.01)
+        # time.sleep(0.05)
     
+    #TRANSLATES THE NATIONS INTO A MORE READABLE FORM
     for i in nations.keys():
         nations[i] = {
             "occupied_points":nations[i][0],
@@ -123,4 +128,4 @@ def create_borders(map_size, amount_of_nations):
     #         print(x, end=" ")
     #     print()
 
-#create_borders(Vec2(64, 64), 12)
+#create_borders(Vec2(64, 64), 10)

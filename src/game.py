@@ -9,6 +9,8 @@ from player import Player
 from settings import MAP_SIZE, WINDOW_SIZE, COORD_MULTIPLIER, WINDOW_FLAGS
 from amath import Vec2
 
+#HANDLES THE GAME ISNTANCE AND GAME LOOP
+#DOESNT DO MUCH, BUT MAKES SURE THE GAME CAN BE RESET AT ANY MOMENT
 #instance
 class Game():
 

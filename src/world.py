@@ -21,31 +21,49 @@ class World(Object):
     def __init__(self):
         super().__init__(Vec2(0, 0), Vec2(0, 0))
 
-        self.backround_sea = Renderer.get_surface("sea")
-        self.surface = Renderer.get_surface("land")
+        self.surface = Renderer.get_surface("Land")
         self.world_points = {}
+
+        
+        self.path_finding_graph = {}
+
+        #ADDS ALL THE WORLD POINTS THEIR PROPER TERRAIN FROM THE MAP COLORS
         def match_color_to_terrain(color):
-            if color in itertools.chain.from_iterable(list(MAP_COLORS["wetland"].values())): return "wetland"
-            elif color in itertools.chain.from_iterable(list(MAP_COLORS["planes"].values())): return "planes"
-            elif color in itertools.chain.from_iterable(list(MAP_COLORS["forest"].values())): return "forest"
-            elif color in itertools.chain.from_iterable(list(MAP_COLORS["mountain1"].values()) +list(MAP_COLORS["mountain2"].values()) +list(MAP_COLORS["mountain3"].values())): return "mountain"
-            elif color in itertools.chain.from_iterable(list(MAP_COLORS["mountaintop"].values())): return "mountaintop"
-            else: return "water"
+            if color in itertools.chain.from_iterable(list(MAP_COLORS["wetland"].values())): return "wetland", 1
+            elif color in itertools.chain.from_iterable(list(MAP_COLORS["planes"].values())): return "planes", 1
+            elif color in itertools.chain.from_iterable(list(MAP_COLORS["forest"].values())): return "forest", 2
+            elif color in itertools.chain.from_iterable(list(MAP_COLORS["mountain1"].values()) +list(MAP_COLORS["mountain2"].values()) +list(MAP_COLORS["mountain3"].values())): return "mountain", 5
+            elif color in itertools.chain.from_iterable(list(MAP_COLORS["mountaintop"].values())): return "mountaintop", 8
+            else: return "water", 100
 
             #print(self.surface.get_width(), self.surface.get_height())
         for y in range(1, REAL_MAP_SIZE.y):
             for x in range(1, REAL_MAP_SIZE.x):
                 color = self.surface.get_at((x*COORD_MULTIPLIER, y*COORD_MULTIPLIER))[:4]
-                terrain_type = match_color_to_terrain(color)
+                terrain_type, weight = match_color_to_terrain(color)
                 #owner = [nation.id for nation in self.nations if Vec2(x, y) in nation.occupied_points][0] if Vec2(x, y) not in self.sea_area else None
 
                 self.world_points[Vec2(x, y)] = {"terrain_type":terrain_type,
                                                 "current_object":None,
                                                 "nation":None,
+                                                "speed":weight
                                                 }
+                self.path_finding_graph[(x, y)] = []
 
-        self.sea_area = set()
+        for point in self.world_points:
+            #print(point)
+            for y in range(-1, 2):
+                for x in range(-1, 2):
+                    other_point = (point.x+x, point.y+y)
+                    if Vec2(point.x+x, point.y+y) in self.world_points and (x !=0 or y != 0):
+                        self.path_finding_graph[tuple(point)].append((other_point, self.world_points[Vec2(other_point[0], other_point[1])]["speed"]))#
+        
+
+
+        #CALCULATES THE SEA AREA AND THE BORDERS
+        #CREATES THE NATION OBJECTS
         nations = create_borders(REAL_MAP_SIZE, random.randint(NATION_AMOUNT.x, NATION_AMOUNT.y+1))
+        self.sea_area = set()
         for nation in list(nations.keys()):
             to_remove = set()
             for coord in nations[nation]["occupied_points"]:
@@ -70,18 +88,14 @@ class World(Object):
         for nation in self.nations: EngineData.current_scene.spawn_object(nation)
 
 
+        
 
-
+        #GIVES THE PLAYER HIS OWN NATION
+        #THIS ISNT GUARANTEED TO BE "kINGODM OF VALORIA" SO THAT NEED TO BE FIXED
         Player.initialize(self.nations[0], self)
-
-    def add_graphic_to_grid(x, y, graphic):
-        self.grid[y][x][2] = graphic
-    def remove_graphic_from_grid(x, y, graphic):
-        self.grid[y][x][2] = 0
 
     def render(self):
         #screen.blit(self.surface, (self.x-self.game.cam_pos[0], self.y-self.game.cam_pos[1], 0, 0))
-        Renderer.render_world_texture("sea", self.pos, self.scale)
-        Renderer.render_world_texture("land", self.pos, self.scale)
+        Renderer.render_world_texture("Sea", self.pos, self.scale)
+        Renderer.render_world_texture("Land", self.pos, self.scale)
         
-

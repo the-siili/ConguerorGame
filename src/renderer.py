@@ -47,19 +47,31 @@ class Camera:
 class Renderer:
     screen = None
     ui_manager: pygame_gui.UIManager|None = None
+    
     original_surfaces = {}
     mip_maps = {}
 
     @classmethod
     def initialize(self, screen):
+        #Settings these only onse because they will exist as the same 
+        #till the application quits
         self.ui_manager = pygame_gui.UIManager(tuple(WINDOW_SIZE), 'src/res/ui_themes/default_theme.json')
-        
         self.screen = screen
-
-        self.add_surface("capitol", pygame.transform.scale(pygame.image.load("src/res/capitol.png"), (64, 64)))
-        self.add_surface("sea", pygame.transform.scale(pygame.image.load("src/res/tex_Water.jpg"), (max(MAP_SIZE), max(MAP_SIZE))))
+        self.__add_standard_textures()
+        #
         self.reset()
-
+    
+    @classmethod
+    def __add_standard_textures(self):
+        self.add_surface("Soldiers", pygame.transform.scale(pygame.image.load("src/res/soldiers.png"), (16, 24)))
+        self.add_surface("Tent", pygame.transform.scale(pygame.image.load("src/res/tent.png"), (16, 16)))
+        self.add_surface("Boat", pygame.transform.scale(pygame.image.load("src/res/boat.png"), (24, 16)))
+        self.add_surface("Capitol", pygame.transform.scale(pygame.image.load("src/res/capitol.png"), (64, 64)))
+        self.add_surface("Castle", pygame.transform.scale(pygame.image.load("src/res/castle.png"), (38, 38)))
+        self.add_surface("Village", pygame.transform.scale(pygame.image.load("src/res/village.png"), (24, 24)))
+        self.add_surface("Construction", pygame.transform.scale(pygame.image.load("src/res/construction.png"), (38, 38)))
+        self.add_surface("Sea", pygame.transform.scale(pygame.image.load("src/res/tex_Water.jpg"), (max(MAP_SIZE), max(MAP_SIZE))))
+        
 
     @classmethod
     def render_world_texture(self, texture_key, pos, scale, centered=False, offset=Vec2(0, 0)):
@@ -116,8 +128,9 @@ class Renderer:
         Camera.set_zoom(1.0)
         Camera.set_zoom(1.0)
         Camera.set_zoom(1.0)
-        #self.mip_maps = {}
-        self.add_surface("land", generate_map(MAP_SIZE, MAP_COLORS))
+        #create a new map and clear the ui manager to be empty so that
+        #previous ui elements will all disappear from the screen and memory
+        self.add_surface("Land", generate_map(MAP_SIZE, MAP_COLORS))
         self.ui_manager.clear_and_reset()
         
 
@@ -126,12 +139,18 @@ class Renderer:
         self.original_surfaces[key] = surface
         self.update_surface(key)
 
+    #updates a textures mip maps
+    #useful for when a generated texture changes, for example the borders
     @classmethod
     def update_surface(self, key):
+        #empty the mip_maps so that the old mipmaps for this texture will dissappear from memory
         self.mip_maps[key] = {}
+        #creates new mip_maps for the texture
         for i in [1, 1.25, 1.5, 1.75, 2]:
             self.mip_maps[key][i] = pygame.transform.scale_by(self.original_surfaces[key], 1/i)
 
+    #returns the original texture by reference to be changed
+    #used for replacing generated textures
     @classmethod
     def get_surface(self, key):
         return self.original_surfaces[key]
